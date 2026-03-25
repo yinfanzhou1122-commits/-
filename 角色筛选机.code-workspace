@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../skills_ui"
+		},
+		{
+			"path": "../zhenzhen api"
+		}
+	],
+	"settings": {}
+}

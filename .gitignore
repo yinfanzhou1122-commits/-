@@ -1,0 +1,21 @@
+# Project output directories
+/image/
+/vector-index/
+/generated_images/
+/node_modules/
+/dist/
+*.zip
+/build/
+/.venv_build/
+
+# Environment variables
+.env
+
+# Large model files (>100MB, use Git LFS or download separately)
+.cache/clip/Xenova/clip-vit-base-patch32/onnx/*.onnx
+
+# Large binary files
+node/node.exe
+
+# Test files with secrets
+test-tos.mjs

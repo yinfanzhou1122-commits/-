@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+
+<html lang="zh"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>角色锻造炉 v1.0 - 仪表盘</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<style data-purpose="custom-scrollbars">
+        /* Cyberpunk mechanical scrollbars */
+        ::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0d0605;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #ff5e00; /* Vibrant Orange */
+            border-radius: 0;
+            box-shadow: 0 0 10px #c2410c;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #ff7e33;
+        }
+    </style>
+<style data-purpose="cyberpunk-styles">
+        .cyber-border {
+            position: relative;
+            border: 1px solid #9a3412;
+            background: rgba(13, 6, 5, 0.85);
+        }
+        .cyber-border::before {
+            content: '';
+            position: absolute;
+            top: -1px; left: -1px;
+            width: 10px; height: 10px;
+            border-top: 2px solid #ff5e00;
+            border-left: 2px solid #ff5e00;
+        }
+        .cyber-glow-red {
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.25);
+        }
+        .cyber-glow-orange {
+            box-shadow: 0 0 20px rgba(255, 94, 0, 0.25);
+        }
+        .text-glow {
+            text-shadow: 0 0 10px rgba(255, 94, 0, 0.7);
+        }
+        .clip-path-polygon {
+            clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
+        }
+        /* Enhanced Zebra Striping for clear row separation */
+        .character-row:nth-child(even) {
+            background: rgba(255, 94, 0, 0.05); /* Slightly lighter cyber shade */
+        }
+        .character-row:nth-child(odd) {
+            background: rgba(10, 5, 4, 1); /* Deep black shade */
+        }
+        /* Distinct border divider between rows */
+        .character-row {
+            border-bottom: 1px solid rgba(154, 52, 18, 0.4);
+        }
+    </style>
+</head>
+<body class="bg-[#0a0504] text-gray-200 font-sans selection:bg-orange-600/40 overflow-hidden h-screen flex flex-col">
+<!-- BEGIN: MainHeader -->
+<header class="flex-shrink-0 z-50 bg-[#0d0605] border-b border-orange-800/60 px-6 py-4 flex items-center justify-between shadow-[0_0_25px_rgba(154,52,18,0.25)] min-w-fit">
+<div class="flex items-center space-x-4">
+<h1 class="text-xl font-black tracking-tighter text-[#ff5e00] text-glow">角色锻造炉 <span class="text-orange-900/80 font-normal ml-1">v1.0</span></h1>
+<nav class="flex space-x-1 ml-8">
+<button class="px-3 py-1 text-[10px] rounded-none bg-orange-950/40 text-orange-400 border border-orange-800/40 uppercase tracking-widest hover:border-orange-500 transition-colors">项目：赛博朋克 2077</button>
+</nav>
+</div>
+<div class="flex items-center space-x-4">
+<button class="px-5 py-2 bg-[#ff5e00] hover:bg-[#ff7e33] text-white rounded-none text-sm font-bold transition-all flex items-center shadow-[0_0_20px_rgba(255,94,0,0.4)] clip-path-polygon">
+<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M12 6v6m0 0v6m0-6h6m-6 0H6" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path></svg>
+            新建批次
+        </button>
+<button class="px-5 py-2 bg-red-600 hover:bg-red-500 text-white rounded-none text-sm font-bold transition-all flex items-center shadow-[0_0_20px_rgba(220,38,38,0.4)]">
+<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path></svg>
+            合成剧照
+        </button>
+</div>
+</header>
+<!-- END: MainHeader -->
+<main class="flex-1 overflow-x-auto bg-[#0a0504]">
+<div class="flex h-full min-w-max">
+<!-- Headers Row (Sticky Top) -->
+<div class="contents">
+<!-- Col 1 Header -->
+<div class="w-80 border-r border-orange-900/30 flex flex-col bg-[#0d0605] sticky left-0 z-30">
+<div class="p-4 border-b border-orange-900/40 bg-orange-950/15 h-[93px] flex flex-col justify-center">
+<label class="text-[10px] font-black text-orange-600 uppercase tracking-[0.2em]">风格预设</label>
+<div class="flex gap-1 mt-2">
+<button class="flex-1 text-[10px] py-1 bg-[#ff5e00] text-white border border-[#ff5e00] font-bold">真人</button>
+<button class="flex-1 text-[10px] py-1 bg-transparent border border-orange-900/50 text-orange-800 hover:text-orange-400">二次元</button>
+<button class="flex-1 text-[10px] py-1 bg-transparent border border-orange-900/50 text-orange-800 hover:text-orange-400">3D</button>
+<button class="flex-1 text-[10px] py-1 bg-transparent border border-orange-900/50 text-orange-800 hover:text-orange-400">自定义</button>
+</div>
+</div>
+<div class="p-3 bg-orange-950/10 border-b border-orange-900/30 flex justify-between items-center h-[48px]">
+<span class="text-[10px] font-bold text-orange-500/90 uppercase tracking-widest">提示词批量输入 (一共 76 个角色，重要角色 10 个)</span>
+<button class="text-[10px] text-red-500 hover:text-red-400 font-bold tracking-tighter whitespace-nowrap ml-2">特征匹配</button>
+</div>
+<!-- Character Rows - Column 1 -->
+<div class="flex-1 overflow-y-auto">
+<div class="character-row h-[320px] p-4 flex flex-col space-y-3">
+<div class="flex items-center justify-between">
+<div class="flex items-center space-x-2">
+<input checked="" class="w-4 h-4 bg-black border-orange-900/60 text-[#ff5e00] focus:ring-[#ff5e00] rounded-none" type="checkbox"/>
+<span class="text-[11px] font-bold text-orange-400 tracking-tighter">角色 #01</span>
+</div>
+<span class="text-[9px] text-orange-900/80 font-medium italic">50集 / 500场</span>
+</div>
+<textarea class="flex-1 text-xs bg-[#050302] border-orange-900/40 rounded-none focus:ring-[#ff5e00] focus:border-[#ff5e00] text-orange-100 placeholder-orange-950 resize-none p-3" placeholder="描述角色的外貌、穿着和性格..."></textarea>
+</div>
+<div class="character-row h-[320px] p-4 flex flex-col space-y-3">
+<div class="flex items-center justify-between">
+<div class="flex items-center space-x-2">
+<input class="w-4 h-4 bg-black border-orange-900/60 text-[#ff5e00] focus:ring-[#ff5e00] rounded-none" type="checkbox"/>
+<span class="text-[11px] font-bold text-orange-400 tracking-tighter">角色 #02</span>
+</div>
+<span class="text-[9px] text-orange-900/80 font-medium italic">25集 / 120场</span>
+</div>
+<textarea class="flex-1 text-xs bg-[#050302] border-orange-900/40 rounded-none focus:ring-[#ff5e00] focus:border-[#ff5e00] text-orange-100 placeholder-orange-950 resize-none p-3" placeholder="描述角色的外貌、穿着和性格..."></textarea>
+</div>
+</div>
+</div>
+<!-- Col 2 Feature Selection -->
+<div class="w-64 border-r border-orange-900/30 flex flex-col">
+<div class="p-4 border-b border-transparent h-[93px]"></div>
+<div class="p-3 bg-orange-950/10 border-b border-orange-900/30 flex justify-between items-center h-[48px]">
+<span class="text-[10px] font-bold text-orange-500/80 uppercase tracking-widest">特征预览</span>
+<button class="px-3 py-1 text-[10px] bg-orange-600/10 text-orange-400 border border-orange-600/40 rounded-none hover:bg-orange-600 hover:text-white transition-all font-bold">全部生成</button>
+</div>
+<div class="flex-1 overflow-y-auto">
+<div class="character-row h-[320px] p-4 flex flex-col justify-center items-center">
+<div class="flex gap-2 mb-4">
+<div class="w-24 h-24 bg-black border border-orange-900/50 relative flex flex-col items-center justify-center">
+<span class="absolute top-1 left-1 text-[8px] text-orange-700 uppercase">人脸参考</span>
+<img alt="Face" class="w-20 h-20 object-cover opacity-85" src="https://lh3.googleusercontent.com/aida-public/AB6AXuANSrZIRME8rtpx2UJc32ObnqsfGBYJNyEjTrVPQ9pGDzTbuaOVSf_remHwfLwBRUiL0j7kVN5fA1gA5wfUrYSKF8SLWuA9lMB6Wa_zeFnzYZ-ynKggjO5Vr3XA8eegvdhQUJL_iKLL3zTBW9cX_UfzZX0YMdUui7OyOUtHcuClYQ6VPiMgUVt9KXQMrwwO3E064P6tlmjBADNQdqOAwXKjcpNBW0364b5CpvdTPJivoILK3M_d6iWq7JdfA8y4Br5kxRJKPyEvjek"/>
+</div>
+<div class="flex flex-col gap-2">
+<div class="w-12 h-11 bg-black border border-orange-900/30 flex items-center justify-center hover:border-orange-600 transition-colors cursor-pointer">
+<img alt="Hair" class="w-8 h-8 opacity-50 grayscale sepia" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCNToHv02kvueBPSP_Xol-GxsM69_TRyEWks96TAwR9yIDycIXP8Ht5VBQt00PLpGp6M1Be0IDv0NZWs8P6hNbFHW2CyhfTf8AoLYGq4Au9-m36hMBJ1iSyqMto3TQHdBU0ETaUdTqVs05wzZ4uljFfgP_aUQ8uzK60Swij8rAZYVEKIa8Pz0nt75PNijvOiq042A6YTzs0stDD3JaF-fbHmIAsrn6zR1Awn6Ck3Z49DmO3GOoqKbKEoWHfTA7K17t3g2NzjgNDJ1s"/>
+</div>
+<div class="w-12 h-11 bg-black border border-orange-900/30 flex items-center justify-center hover:border-orange-600 transition-colors cursor-pointer">
+<img alt="Cloth" class="w-8 h-8 opacity-50 grayscale sepia" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCcSkOucPPVcEN46gN1XD71ZGXi8dt4SOk2YP9TycsK0qSTLT0BK15aTFr3DHbrBqwtprUts_A66xDVHGj4gwcvP3S0yPDPJwzzdTsphGw93shzWlZofqZGJcPco3nYSchSM1OmDbBvnIDMruZ6Kn_htBSPgwhIo2pObfkmmeXljX7-TNYKbQe7dNYBfjCexRR47Mprlt4R1T84A7len54Cj9jbV3HzJrlJQLsrgHSEPCHlrJvaPb4xkhb5FlXv3KvyJLIgHI1hSXI"/>
+</div>
+</div>
+</div>
+<button class="w-full py-2 text-[10px] bg-orange-900/15 hover:bg-orange-600 hover:text-white text-orange-500 border border-orange-900/50 transition-all uppercase font-black tracking-widest">单体生成</button>
+</div>
+<div class="character-row h-[320px] p-4 flex flex-col justify-center items-center">
+<div class="flex gap-2 mb-4">
+<div class="w-24 h-24 bg-black border border-orange-900/50 relative flex flex-col items-center justify-center">
+<span class="absolute top-1 left-1 text-[8px] text-orange-700 uppercase">人脸参考</span>
+<img alt="Face" class="w-20 h-20 object-cover opacity-85" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBODq_iWcr5O73zLwJH7uASiPpahO8BjoAWLgxsiHP26Ptmd0GhVHnUXTR50MKK3IAFrh0cvq1ai_9yuJE24yFhX3fuNH83nnbTM6ivV5tKhkDYx0gWvGdLGEHvG2XJt-S9vejA_zSvPEFpz1ugOWC2vhtOApCFahkkon97ZmY0ouGi3CK7E-mJbCKV3HoraVk4tlucyFgokk7thOgfwVRpuTVQDNmtjJDF6bDhkn5JTclaDRuDVjvRi8Ko3-v94453CqrKt8uzJxg"/>
+</div>
+<div class="flex flex-col gap-2">
+<div class="w-12 h-11 bg-black border border-orange-900/30"></div>
+<div class="w-12 h-11 bg-black border border-orange-900/30"></div>
+</div>
+</div>
+<button class="w-full py-2 text-[10px] bg-orange-900/15 hover:bg-orange-600 hover:text-white text-orange-500 border border-orange-900/50 transition-all uppercase font-black tracking-widest">单体生成</button>
+</div>
+</div>
+</div>
+<!-- Col 3 Variants -->
+<div class="w-[480px] border-r border-orange-900/30 flex flex-col">
+<div class="p-4 border-b border-transparent h-[93px] flex flex-col justify-end">
+<div class="flex justify-between items-center w-full">
+<div>
+<span class="text-[10px] font-bold text-orange-500/80 uppercase block tracking-widest">变体示例</span>
+<span class="text-[9px] text-orange-900/70 italic">左右滑动查看不同版本</span>
+</div>
+</div>
+</div>
+<div class="p-3 bg-orange-950/10 border-b border-orange-900/30 flex flex-col justify-center h-[48px]">
+<div class="flex justify-between items-center w-full">
+<div class="flex space-x-4">
+<button class="text-[10px] border-b-2 border-orange-500 text-orange-500 font-bold uppercase tracking-widest">AI 推荐</button>
+<button class="text-[10px] border-b-2 border-transparent text-orange-900 hover:text-orange-500 font-bold uppercase tracking-widest transition-colors">生成结果</button>
+</div>
+<button class="px-3 py-1 text-[10px] bg-orange-600/10 text-orange-400 border border-orange-600/40 rounded-none hover:bg-orange-600 hover:text-white transition-all font-bold">批量生成三视图</button>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto">
+<div class="character-row h-[320px] p-4 flex flex-col justify-center">
+<div class="flex space-x-3 overflow-x-auto pb-2">
+<div class="flex-shrink-0 w-32 h-44 bg-black border border-orange-900/50 group relative">
+<img alt="Asset" class="w-full h-full object-cover opacity-75 group-hover:opacity-100 transition-opacity" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAJj_xYibkoShNpicTjQeFu78bxOUxeGyYdKkFee98ol_Y9KiHYWpOXX_lENd7QoHIACUdFedM2xlwASx1GgqnGGOTYh-qnPwAUVzLwP7d1a8aOdT_dfvB9qMtcvvAsPYaes3mmZCuQnh-4fAFaxLUxJdMrubna0d_OVTRCWYWDqh5t-o49axGCpiV6OMjroHNlA65jYWg_DhjcXrXdgo7sKzyD4KfrcicpwTyaToevLq_DyYt78OHsAhuiK5OoRE3GeygsRzJ1RUE"/>
+<div class="absolute top-1 right-1 bg-blue-600 px-1 py-0.5 text-[7px] text-white font-black uppercase">资产库匹配</div>
+</div>
+<div class="flex-shrink-0 w-32 h-44 bg-black border border-orange-900/50 group relative">
+<img alt="Asset" class="w-full h-full object-cover opacity-75 group-hover:opacity-100 transition-opacity" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAof74u9mxPKOPCD4STy3zVLy5rBwO88u8YS1HJrOAE6uKIEj3pNtWe9fPkxC9h52SDmoaCxOF0u5h5PzGcInXyJVKiPVnr7iV2hH0nZ8RogaU8EcyPp0iNW9r2Qv5GpdFxp2fr0HDa550F9giynkzt3GC3V9jv33ZEXfsPirL-aErAUmiTeiYTohfQUE_Mqw9X1L46yzD8JallkAr9h7a0CWssWZPWYXmTKDIBcG5sznkWAYJbrZpCDfC7iSFv2k6SBGibs71tK7A"/>
+<div class="absolute top-1 right-1 bg-blue-600 px-1 py-0.5 text-[7px] text-white font-black uppercase">资产库匹配</div>
+</div>
+<button class="flex-shrink-0 w-32 h-44 border-2 border-dashed border-orange-900/30 flex flex-col items-center justify-center text-orange-900 hover:text-orange-500 hover:border-orange-500 transition-all">
+<svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span class="text-[10px] font-bold">上传</span>
+</button>
+</div>
+</div>
+<div class="character-row h-[320px] p-4 flex flex-col justify-center">
+<div class="flex space-x-3 overflow-x-auto pb-2">
+<div class="flex-shrink-0 w-32 h-44 bg-black border border-orange-900/50 group relative">
+<img alt="Variant" class="w-full h-full object-cover opacity-75 group-hover:opacity-100 transition-opacity" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCpn-uj-GTzDgZu6sBZg0zXoDt_tNHKgjYR3qaraw5aZr7pQmTOrNgzWGD_lVG0XPU_G20HXYHWniqNMzJpsasSSz1DuCizHyOcdtxir5yg16_I2Xxm5ZEI67zypFYBJboI3q0fG6LHnd7DURl29swazd8N5RPFRRyEq3AWdGQztjwFa4I2UY8rPZS40hzOdtqZPaQ2YzGPLLYe_mN0uRWEHFzI3EsuP8w3IFqHClycpdMMgoSq3xM-a_uALRkDB5VWdWM5V_dbXI8"/>
+</div>
+<button class="flex-shrink-0 w-32 h-44 border-2 border-dashed border-orange-900/30 flex flex-col items-center justify-center text-orange-900 hover:text-orange-500 hover:border-orange-500 transition-all">
+<svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span class="text-[10px] font-bold">上传</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Col 4 Turnarounds -->
+<div class="w-96 border-r border-orange-900/30 flex flex-col">
+<div class="p-4 border-b border-transparent h-[93px]"></div>
+<div class="p-3 bg-orange-950/10 border-b border-orange-900/30 flex justify-between items-center h-[48px]">
+<span class="text-[10px] font-bold text-orange-500/80 uppercase tracking-widest">三视图模型</span>
+<button class="text-[10px] text-orange-400 hover:text-[#ff5e00] transition-colors">生成全景</button>
+</div>
+<div class="flex-1 overflow-y-auto">
+<div class="character-row h-[320px] p-4 flex flex-col justify-center">
+<div class="w-full aspect-[4/3] bg-black border border-orange-900/40 overflow-hidden relative group">
+<img alt="3-view diagram" class="w-full h-full object-contain opacity-90 p-2" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAqL1jULWqrbYPWhO-YfRGzFg2eQIUA6FixS8cbZNBJNJ4a5Z3a2pSTGCqTALIKF7UtrcQLc9igOr4CjqkTRpWqjHdFGObvvJ3TxtSs4_OAYqKgQiGzWwIsYgWMfMqocw_MfAKBnVGgUgU7WpJ4-gJBem4rFTBZ7PerXnWN3RROdsFUpXMOZuEnq2nw7UizkT87A9mOT8_bS_vTB60cGUfQlL1y5wZvjN1ahCgXZX8s4PYsd5iFgv6eCQ9xjOuXSz9LywWeDHSH9sw"/>
+<div class="absolute top-2 left-2 text-[8px] bg-[#ff5e00] px-1.5 py-0.5 text-black font-black uppercase tracking-tighter">Front / Side / Back</div>
+</div>
+</div>
+<div class="character-row h-[320px] p-4 flex flex-col justify-center">
+<div class="w-full aspect-[4/3] bg-[#050302] border border-dashed border-orange-900/40 flex flex-col items-center justify-center text-orange-950 hover:text-orange-800 transition-colors">
+<svg class="w-8 h-8 mb-2 opacity-40" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span class="text-[10px] uppercase font-bold tracking-widest">等待生成</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Col 5 Voice & Assets -->
+<div class="w-80 flex flex-col bg-[#0d0605] shadow-[-15px_0_25px_rgba(0,0,0,0.6)]">
+<div class="p-4 border-b border-transparent h-[93px]"></div>
+<div class="p-3 bg-orange-950/20 border-b border-orange-900/30 flex justify-between items-center h-[48px]">
+<span class="text-[10px] font-bold text-orange-500/80 uppercase tracking-widest">音色选择</span>
+<button class="text-[10px] text-red-500 hover:text-red-400 font-bold tracking-tighter">全部保存</button>
+</div>
+<div class="flex-1 overflow-y-auto">
+<div class="character-row h-[320px] p-4 flex flex-col justify-center space-y-4">
+<div class="space-y-2">
+<label class="text-[9px] text-orange-800 uppercase font-black tracking-widest">音色预设</label>
+<div class="flex items-center space-x-2">
+<select class="flex-1 bg-black border-orange-900/40 text-[11px] text-orange-100 focus:ring-[#ff5e00] rounded-none py-1.5">
+<option>男声 - 硬核武士</option>
+<option>女声 - 赛博歌姬</option>
+<option>中性 - 旁白 AI</option>
+</select>
+<button class="p-2 bg-orange-600/10 border border-orange-600/40 text-orange-500 hover:bg-[#ff5e00] hover:text-white transition-all">
+<svg class="w-4 h-4" fill="currentColor" viewbox="0 0 24 24"><path d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path></svg>
+</button>
+</div>
+</div>
+<button class="w-full py-2.5 bg-[#ff5e00] text-white border border-[#ff7e33] text-[10px] font-black uppercase tracking-[0.2em] shadow-[0_0_15px_rgba(255,94,0,0.3)] hover:shadow-[0_0_25px_rgba(255,94,0,0.5)] transition-all">
+                            存入资产库
+                        </button>
+</div>
+<div class="character-row h-[320px] p-4 flex flex-col justify-center space-y-4">
+<div class="space-y-2">
+<label class="text-[9px] text-orange-800 uppercase font-black tracking-widest">音色预设</label>
+<div class="flex items-center space-x-2">
+<select class="flex-1 bg-black border-orange-900/40 text-[11px] text-orange-100 focus:ring-[#ff5e00] rounded-none py-1.5">
+<option>未配置</option>
+<option>男声 - 硬核武士</option>
+</select>
+<button class="p-2 bg-orange-600/10 border border-orange-600/40 text-orange-500 hover:bg-[#ff5e00] hover:text-white transition-all">
+<svg class="w-4 h-4" fill="currentColor" viewbox="0 0 24 24"><path d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path></svg>
+</button>
+</div>
+</div>
+<button class="w-full py-2.5 bg-orange-900/20 text-orange-800 border border-orange-900/40 text-[10px] font-black uppercase tracking-[0.2em] hover:bg-orange-600 hover:text-white transition-all">
+                            存入资产库
+                        </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- BEGIN: Footer Stills View -->
+<footer class="fixed bottom-6 right-6 z-50">
+<div class="flex flex-col items-end space-y-4">
+<div class="bg-[#0d0605]/98 backdrop-blur-lg border border-red-600/50 p-4 rounded-none shadow-2xl w-80 translate-y-2 opacity-0 hover:opacity-100 hover:translate-y-0 transition-all pointer-events-none hover:pointer-events-auto cyber-glow-red">
+<h3 class="text-[10px] font-black text-red-500 mb-3 uppercase flex items-center tracking-widest">
+<svg class="w-3.5 h-3.5 mr-2" fill="currentColor" viewbox="0 0 20 20"><path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM14 11a1 1 0 011 1v1h1a1 1 0 110 2h-1v1a1 1 0 11-2 0v-1h-1a1 1 0 110-2h1v-1a1 1 0 011-1z"></path></svg>
+                合成剧照预览
+            </h3>
+<div class="aspect-video bg-black border border-red-900/40 flex items-center justify-center relative group overflow-hidden">
+<img alt="Composite preview" class="w-full h-full object-cover opacity-60 group-hover:scale-110 group-hover:opacity-90 transition-all duration-1000" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB_iPVdQiKhRc_S4qhtJ5zCKxCvZ708Fh5-QCVVr86O36Ba09HM76tWhFXMqxvMRLJjCdSnyaVNj4NxdVa0wi9aSbaY872TbdOh1fTFYjorcYfEQlGXjFM9NmFNQzgZlv1kDwMO14N8uWmiIXw2sE-SA6XhKxhC9i534E5_xROXRHb9PUVVaGYcuuHBV1G17TbAksS6dO7-7-rqwgpk9zc1UEpWsylXZBIT-4xwYJFniQ4-43IySkCOiBByCzYpXRCP9e1I0ReQoNs"/>
+<button class="absolute inset-0 m-auto w-12 h-12 bg-red-600 rounded-none flex items-center justify-center text-white shadow-[0_0_25px_rgba(220,38,38,0.7)] opacity-0 group-hover:opacity-100 transition-opacity">
+<svg class="w-6 h-6" fill="currentColor" viewbox="0 0 20 20"><path d="M11.3 1.047a1 1 0 01.897.487l1.174 2.14 2.39.311a1 1 0 01.504 1.707l-1.747 1.627.398 2.379a1 1 0 01-1.451 1.054L11 7.54l-2.166 1.14a1 1 0 01-1.451-1.054l.398-2.38-1.747-1.626a1 1 0 01.504-1.707l2.39-.311 1.174-2.14a1 1 0 01.897-.487z" fill-rule="evenodd"></path></svg>
+</button>
+</div>
+</div>
+<button class="bg-red-600 p-4 rounded-none border border-red-400 shadow-[0_0_30px_rgba(220,38,38,0.5)] hover:shadow-[0_0_45px_rgba(220,38,38,0.8)] transition-all group cyber-glow-red">
+<svg class="w-6 h-6 text-white group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path><path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path></svg>
+</button>
+</div>
+</footer>
+<!-- END: Footer Stills View -->
+</body></html>
