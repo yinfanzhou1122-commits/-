@@ -1,8 +1,8 @@
 ; 角色锻造炉 v1.0 - 快速升级补丁 (仅含代码更新)
 ; 用于给已经安装完整包的老用户快速更新代码，无需重新下载 4GB 素材库和依赖。
 
-#define MyAppName "角色锻造炉"
-#define MyAppVersion "2.12_Patch"
+#define MyAppName "酱油暖暖"
+#define MyAppVersion "2.17_Patch"
 #define MyAppPublisher "Character Forge"
 #define SrcDir "e:\程序\角色筛选机4.0\角色筛选机4.0"
 
@@ -16,7 +16,7 @@ DefaultDirName={autopf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 AllowNoIcons=yes
 OutputDir={#SrcDir}\dist
-OutputBaseFilename=角色锻造炉_v2.12_快速升级补丁
+OutputBaseFilename=酱油暖暖_v2.17_快速升级补丁
 Compression=lzma2/fast
 SolidCompression=no
 DiskSpanning=no
@@ -44,7 +44,7 @@ Source: "{#SrcDir}\.env"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#SrcDir}\start.bat"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#SrcDir}\preload.cjs"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#SrcDir}\electron-main.cjs"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#SrcDir}\app.ico"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#SrcDir}\app.ico"; DestDir: "{app}"; DestName: "app_v3.ico"; Flags: ignoreversion
 
 ; 前端文件
 Source: "{#SrcDir}\public\*"; DestDir: "{app}\public"; Flags: ignoreversion recursesubdirs createallsubdirs
@@ -54,8 +54,8 @@ Source: "{#SrcDir}\VC_redist.x64.exe"; DestDir: "{tmp}"; Flags: ignoreversion de
 
 [Icons]
 ; 更新快捷方式图标
-Name: "{group}\{#MyAppName}"; Filename: "{app}\start.bat"; WorkingDir: "{app}"; IconFilename: "{app}\app.ico"
-Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\start.bat"; WorkingDir: "{app}"; IconFilename: "{app}\app.ico"
+Name: "{group}\{#MyAppName}"; Filename: "{app}\start.bat"; WorkingDir: "{app}"; IconFilename: "{app}\app_v3.ico"
+Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\start.bat"; WorkingDir: "{app}"; IconFilename: "{app}\app_v3.ico"
 
 [Run]
 Filename: "{tmp}\VC_redist.x64.exe"; Parameters: "/install /quiet /norestart"; StatusMsg: "正在安装底层组件库 (VC++ Redistributable)，请耐心等待..."; Flags: waituntilterminated

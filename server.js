@@ -209,7 +209,7 @@ function sanitizePathSegments(input) {
 
 function saveBase64ImageToLibrary({ endpoint, dataUrl, gender, partType, filename, subfolder }) {
     const genderKey = normalizeGenderKey(gender);
-    const genderFolder = genderKey === 'male' ? '男性' : '女性';
+    const genderFolder = genderKey === 'male' ? '男性' : genderKey === 'monster' ? '妖兽' : '女性';
     const partFolder = LIBRARY_PART_FOLDERS[partType] || partType;
 
     if (!Object.values(LIBRARY_PART_FOLDERS).includes(partFolder)) {
@@ -739,8 +739,7 @@ app.post('/api/get-all-images', (req, res) => {
             male: { face: [], hair: [], clothes: [] },
             female: { face: [], hair: [], clothes: [] }
         };
-
-        const genderMap = { male: '男性', female: '女性' };
+        const genderMap = { male: '男性', female: '女性', monster: '妖兽' };
         const partMap = { face: '脸', hair: '发型', clothes: '服装' };
 
         ['male', 'female'].forEach(g => {
@@ -1324,8 +1323,11 @@ app.post('/api/search-images', (req, res) => {
     const styleLibPath = getStyleLibraryPath(styleCode);
 
     // 映射为中文文件夹名
-    const genderFolder = gender === 'male' ? '男性' : '女性';
-    const partTypeFolder = { face: '脸', halfbody: '半身图', hair: '发型', clothes: '服装' }[partType] || partType;
+    const genderFolder = gender === 'male' ? '男性' : gender === 'monster' ? '妖兽' : '女性';
+    // 妖兽只有 头/服装 两个文件夹，face和hair都映射到 头
+    const partTypeFolder = gender === 'monster'
+        ? (partType === 'clothes' ? '服装' : '头')
+        : ({ face: '脸', halfbody: '半身图', hair: '发型', clothes: '服装' }[partType] || partType);
     let basePath = path.join(styleLibPath, genderFolder, partTypeFolder);
 
     // 如果指定了子文件夹，直接定位到该子文件夹
@@ -1862,7 +1864,7 @@ function getAnimeFaceFolder(character = {}) {
 }
 
 function readAnimeFaceCandidates(genderKey, folderName) {
-    const genderFolder = genderKey === 'male' ? '男性' : '女性';
+    const genderFolder = genderKey === 'male' ? '男性' : genderKey === 'monster' ? '妖兽' : '女性';
     const halfbodyBasePath = path.join(getStyleLibraryPath(DEFAULT_STYLE), genderFolder, '半身图');
     if (!fs.existsSync(halfbodyBasePath)) return [];
 

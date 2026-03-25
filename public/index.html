@@ -3,7 +3,7 @@
 <html lang="zh"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>角色锻造炉 v1.0 - 仪表盘</title>
+<title>酱油暖暖 v1.0 - 仪表盘</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <style data-purpose="custom-scrollbars">
         /* Cyberpunk mechanical scrollbars */
@@ -65,7 +65,7 @@
 <!-- BEGIN: MainHeader -->
 <header class="flex-shrink-0 z-50 bg-[#0d0605] border-b border-orange-800/60 px-6 py-4 flex items-center justify-between shadow-[0_0_25px_rgba(154,52,18,0.25)] min-w-fit">
 <div class="flex items-center space-x-4">
-<h1 class="text-xl font-black tracking-tighter text-[#ff5e00] text-glow">角色锻造炉 <span class="text-orange-900/80 font-normal ml-1">v1.0</span></h1>
+<h1 class="text-xl font-black tracking-tighter text-[#ff5e00] text-glow">酱油暖暖 <span class="text-orange-900/80 font-normal ml-1">v1.0</span></h1>
 <nav class="flex space-x-1 ml-8">
 <button class="px-3 py-1 text-[10px] rounded-none bg-orange-950/40 text-orange-400 border border-orange-800/40 uppercase tracking-widest hover:border-orange-500 transition-colors">项目：赛博朋克 2077</button>
 <a href="/stitch/code.html" target="_blank" class="px-5 py-2 text-sm rounded-none bg-[#ff5e00] text-white border border-[#ff5e00] font-bold uppercase tracking-widest hover:bg-[#ff7e33] transition-all shadow-[0_0_20px_rgba(255,94,0,0.4)] flex items-center">🎬 场景设定</a>
@@ -1186,7 +1186,8 @@ function detectGender(prompt) {
     const isFemale = femaleKw.some(kw => prompt.includes(kw));
     if (isMale && !isFemale) return 'male';
     if (isFemale && !isMale) return 'female';
-    if (isMale && isFemale) return 'female'; // 有歧义时按女性
+    // 有歧义时（如"成年男女"）返回 unknown，由用户手动选择
+    if (isMale && isFemale) return 'unknown';
     return 'unknown';
 }
 
@@ -1376,9 +1377,11 @@ function assignPreferredFolders(characters) {
         });
     }
 
-    // 未知性别不设限制
-    characters.filter(c => c.gender === 'unknown').forEach(c => {
+    // 未知性别和妖兽不设限制
+    characters.filter(c => c.gender === 'unknown' || c.gender === 'monster').forEach(c => {
         c.preferredFaceSubfolder = '';
+        c.preferredHairSubfolder = '';
+        c.preferredClothesSubfolder = '';
     });
 
     // 智能匹配发型文件夹
@@ -1398,13 +1401,15 @@ function assignPreferredFolders(characters) {
             if (/古装|汉服|古代|古风|仙/.test(p)) c.preferredHairSubfolder = '古代发型';
             else if (/现代|都市/.test(p)) c.preferredHairSubfolder = '现代发型';
             else c.preferredHairSubfolder = '';
-        } else {
+        } else if (c.gender !== 'monster') {
+            // unknown 性别也不设限制
             c.preferredHairSubfolder = '';
         }
     });
 
     // 智能匹配服装文件夹
     characters.forEach(c => {
+        if (c.gender === 'monster' || c.gender === 'unknown') return; // 妖兽和未知性别跳过自动匹配
         const p = c.prompt || '';
         if (/古装|古代|汉服|仙|修仙|道袍|长袍/.test(p)) c.preferredClothesSubfolder = '古装';
         else if (/现代|都市|西装|制服|校服|时尚/.test(p)) c.preferredClothesSubfolder = '现代';
@@ -1423,27 +1428,39 @@ function setCharGenderRole(charIndex, gender, role) {
         if (role === 'lead') char.preferredFaceSubfolder = '亚洲青年女主演脸部';
         else if (role === 'elder-support') char.preferredFaceSubfolder = '亚洲中老年女性配角';
         else char.preferredFaceSubfolder = '亚洲女配角';
-    } else {
+    } else if (gender === 'male') {
         if (role === 'lead') char.preferredFaceSubfolder = '亚洲男主角';
         else if (role === 'elder-support') char.preferredFaceSubfolder = '亚洲中老年男性配角';
         else char.preferredFaceSubfolder = '亚洲男配角';
+    } else if (gender === 'monster') {
+        char.preferredFaceSubfolder = '';
+        char.preferredHairSubfolder = '';
+        char.preferredClothesSubfolder = '';
     }
     // 更新名字标签颜色
     const nameEl = document.getElementById(`name-tag-${charIndex}`);
     if (nameEl) {
         nameEl.className = 'text-[11px] font-bold tracking-tighter px-1.5 py-0.5 rounded-sm ' +
-            (gender === 'male' ? 'bg-blue-900/40 text-blue-300' : 'bg-pink-900/40 text-pink-300');
+            (gender === 'male' ? 'bg-blue-900/40 text-blue-300' : gender === 'monster' ? 'bg-green-900/40 text-green-300' : 'bg-pink-900/40 text-pink-300');
     }
     // 更新选择器按钮文字（保留按钮）
     const selectorBtn = document.getElementById(`gender-selector-${charIndex}`);
     if (selectorBtn) {
-        const gSymbol = gender === 'male' ? '♂' : '♀';
-        const rLabel = role === 'lead' ? '主' : role === 'elder-support' ? '老配' : '配';
-        selectorBtn.textContent = gSymbol + rLabel;
-        selectorBtn.className = 'px-1.5 py-0.5 text-[9px] border transition-all ' +
-            (gender === 'male'
-                ? 'bg-blue-900/30 text-blue-300 border-blue-700/40 hover:bg-blue-600 hover:text-white'
-                : 'bg-pink-900/30 text-pink-300 border-pink-700/40 hover:bg-pink-600 hover:text-white');
+        let btnText, btnClass;
+        if (gender === 'monster') {
+            btnText = '🐉妖兽';
+            btnClass = 'px-1.5 py-0.5 text-[9px] border transition-all bg-green-900/30 text-green-300 border-green-700/40 hover:bg-green-600 hover:text-white';
+        } else {
+            const gSymbol = gender === 'male' ? '♂' : '♀';
+            const rLabel = role === 'lead' ? '主' : role === 'elder-support' ? '老配' : '配';
+            btnText = gSymbol + rLabel;
+            btnClass = 'px-1.5 py-0.5 text-[9px] border transition-all ' +
+                (gender === 'male'
+                    ? 'bg-blue-900/30 text-blue-300 border-blue-700/40 hover:bg-blue-600 hover:text-white'
+                    : 'bg-pink-900/30 text-pink-300 border-pink-700/40 hover:bg-pink-600 hover:text-white');
+        }
+        selectorBtn.textContent = btnText;
+        selectorBtn.className = btnClass;
     }
     // 隐藏下拉
     const dropdown = document.getElementById(`gender-dropdown-${charIndex}`);
@@ -1469,7 +1486,9 @@ function toggleGenderDropdown(charIndex) {
         <button onclick="setCharGenderRole(${charIndex},'female','elder-support')" class="block w-full text-left px-3 py-1.5 text-[10px] text-pink-500 hover:bg-pink-900/30">♀ 中老年女配角</button>
         <button onclick="setCharGenderRole(${charIndex},'male','lead')" class="block w-full text-left px-3 py-1.5 text-[10px] text-blue-300 hover:bg-blue-900/30">♂ 男主角</button>
         <button onclick="setCharGenderRole(${charIndex},'male','support')" class="block w-full text-left px-3 py-1.5 text-[10px] text-blue-400 hover:bg-blue-900/30">♂ 男配角</button>
-        <button onclick="setCharGenderRole(${charIndex},'male','elder-support')" class="block w-full text-left px-3 py-1.5 text-[10px] text-blue-500 hover:bg-blue-900/30">♂ 中老年男配角</button>`;
+        <button onclick="setCharGenderRole(${charIndex},'male','elder-support')" class="block w-full text-left px-3 py-1.5 text-[10px] text-blue-500 hover:bg-blue-900/30">♂ 中老年男配角</button>
+        <div class="border-t border-orange-900/30 my-1"></div>
+        <button onclick="setCharGenderRole(${charIndex},'monster','support')" class="block w-full text-left px-3 py-1.5 text-[10px] text-green-300 hover:bg-green-900/30">🐉 妖兽</button>`;
     document.body.appendChild(dd);
     // 确保下拉菜单不超出屏幕
     requestAnimationFrame(() => {
@@ -1511,13 +1530,18 @@ document.addEventListener('click', (e) => {
 async function openSelector(charIndex, partType, triggerEl) {
     closeSelectorPanel();
     const char = parsedCharacters[charIndex];
-    const genderKey = char.gender === 'male' ? 'male' : 'female';
+    const genderKey = char.gender === 'male' ? 'male' : char.gender === 'monster' ? 'monster' : 'female';
     const state = charStates[charIndex][partType];
-    const partNames = { face: '人脸', hair: '发型', clothes: '服装' };
+    const partNames = genderKey === 'monster'
+        ? { face: '妖兽头部', hair: '妖兽头部', clothes: '妖兽服装' }
+        : { face: '人脸', hair: '发型', clothes: '服装' };
 
     // 计算初始文件夹路径（中文文件夹名）
-    const genderFolder = genderKey === 'male' ? '男性' : '女性';
-    const partFolder = partType === 'face' ? '脸' : partType === 'hair' ? '发型' : '服装';
+    const genderFolder = genderKey === 'male' ? '男性' : genderKey === 'monster' ? '妖兽' : '女性';
+    // 妖兽只有 头/服装 两个文件夹，face和hair都映射到 头
+    const partFolder = genderKey === 'monster'
+        ? (partType === 'clothes' ? '服装' : '头')
+        : (partType === 'face' ? '脸' : partType === 'hair' ? '发型' : '服装');
     const initialBrowsePath = getStyleImageLibraryPath() + '/' + genderFolder + '/' + partFolder;
 
     // 获取智能匹配的子文件夹名
@@ -3054,7 +3078,7 @@ function renderAllCharacterRows(characters) {
 
     characters.forEach((char, index) => {
         const countDisplay = `${char.count}次 / 第${char.episode}集`;
-        const genderBg = char.gender === 'male' ? 'bg-blue-900/40 text-blue-300' : char.gender === 'female' ? 'bg-pink-900/40 text-pink-300' : 'text-orange-400';
+        const genderBg = char.gender === 'male' ? 'bg-blue-900/40 text-blue-300' : char.gender === 'female' ? 'bg-pink-900/40 text-pink-300' : char.gender === 'monster' ? 'bg-green-900/40 text-green-300' : 'text-orange-400';
 
         const row = document.createElement('div');
         row.className = 'character-row flex min-w-max';
@@ -3068,7 +3092,7 @@ function renderAllCharacterRows(characters) {
                     <input id="char-check-${index}" ${index < 10 ? 'checked' : ''} class="w-4 h-4 bg-black border-orange-900/60 text-[#ff5e00] focus:ring-[#ff5e00] rounded-none" type="checkbox" />
                     <span class="text-[9px] text-orange-500">（${char.rawBracket || ''}）</span>
                     <span id="name-tag-${index}" class="text-[11px] font-bold tracking-tighter px-1.5 py-0.5 rounded-sm ${genderBg}">${char.name}</span>
-                    <button id="gender-selector-${index}" onclick="toggleGenderDropdown(${index})" class="px-1.5 py-0.5 text-[9px] ${char.gender === 'male' ? 'bg-blue-900/30 text-blue-300 border border-blue-700/40 hover:bg-blue-600' : char.gender === 'female' ? 'bg-pink-900/30 text-pink-300 border border-pink-700/40 hover:bg-pink-600' : 'bg-orange-900/30 text-orange-400 border border-orange-700/40 hover:bg-orange-600'} hover:text-white transition-all" title="设置性别与角色">${char.gender === 'male' ? (char.preferredFaceSubfolder && char.preferredFaceSubfolder.includes('主') ? '♂主' : '♂配') : char.gender === 'female' ? (char.preferredFaceSubfolder && char.preferredFaceSubfolder.includes('主') ? '♀主' : '♀配') : '⚙'}</button>
+                    <button id="gender-selector-${index}" onclick="toggleGenderDropdown(${index})" class="px-1.5 py-0.5 text-[9px] ${char.gender === 'male' ? 'bg-blue-900/30 text-blue-300 border border-blue-700/40 hover:bg-blue-600' : char.gender === 'female' ? 'bg-pink-900/30 text-pink-300 border border-pink-700/40 hover:bg-pink-600' : char.gender === 'monster' ? 'bg-green-900/30 text-green-300 border border-green-700/40 hover:bg-green-600' : 'bg-orange-900/30 text-orange-400 border border-orange-700/40 hover:bg-orange-600'} hover:text-white transition-all" title="设置性别与角色">${char.gender === 'male' ? (char.preferredFaceSubfolder && char.preferredFaceSubfolder.includes('主') ? '♂主' : '♂配') : char.gender === 'female' ? (char.preferredFaceSubfolder && char.preferredFaceSubfolder.includes('主') ? '♀主' : '♀配') : char.gender === 'monster' ? '🐉妖兽' : '⚙'}</button>
                 </div>
             </div>
             <textarea class="flex-1 text-xs bg-[#050302] border-orange-900/40 rounded-none focus:ring-[#ff5e00] focus:border-[#ff5e00] text-orange-100 placeholder-orange-700 resize-none p-3">${char.prompt}</textarea>

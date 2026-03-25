@@ -1,8 +1,8 @@
 ; 角色锻造炉 v1.0 - Inno Setup 安装脚本
 ; 包含: Node.js 运行时 + 应用代码 + 依赖 + CLIP 模型 + 图片素材库
 
-#define MyAppName "角色锻造炉"
-#define MyAppVersion "2.12"
+#define MyAppName "酱油暖暖"
+#define MyAppVersion "2.17"
 #define MyAppPublisher "Character Forge"
 #define MyAppExeName "start.bat"
 #define SrcDir "e:\程序\角色筛选机4.0\角色筛选机4.0"
@@ -16,7 +16,7 @@ DefaultDirName={autopf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 AllowNoIcons=yes
 OutputDir={#SrcDir}\dist
-OutputBaseFilename=角色锻造炉_v2.12_安装包_不含素材库
+OutputBaseFilename=酱油暖暖_v2.17_安装包_不含素材库
 Compression=lzma2/fast
 SolidCompression=no
 DiskSpanning=no
@@ -46,7 +46,7 @@ Source: "{#SrcDir}\.env"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#SrcDir}\start.bat"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#SrcDir}\preload.cjs"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#SrcDir}\electron-main.cjs"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#SrcDir}\app.ico"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#SrcDir}\app.ico"; DestDir: "{app}"; DestName: "app_v3.ico"; Flags: ignoreversion
 
 ; 前端文件
 Source: "{#SrcDir}\public\*"; DestDir: "{app}\public"; Flags: ignoreversion recursesubdirs createallsubdirs
@@ -65,9 +65,9 @@ Source: "{#SrcDir}\.cache\*"; DestDir: "{app}\.cache"; Flags: ignoreversion recu
 Source: "{#SrcDir}\VC_redist.x64.exe"; DestDir: "{tmp}"; Flags: ignoreversion deleteafterinstall
 
 [Icons]
-Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; WorkingDir: "{app}"; IconFilename: "{app}\app.ico"
+Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; WorkingDir: "{app}"; IconFilename: "{app}\app_v3.ico"
 Name: "{group}\卸载 {#MyAppName}"; Filename: "{uninstallexe}"
-Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; WorkingDir: "{app}"; Tasks: desktopicon; IconFilename: "{app}\app.ico"
+Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; WorkingDir: "{app}"; Tasks: desktopicon; IconFilename: "{app}\app_v3.ico"
 
 [Run]
 Filename: "{tmp}\VC_redist.x64.exe"; Parameters: "/install /quiet /norestart"; StatusMsg: "正在安装底层组件库 (VC++ Redistributable)，可能会耗时几分钟..."; Flags: waituntilterminated
